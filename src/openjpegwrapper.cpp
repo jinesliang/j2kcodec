@@ -9,7 +9,6 @@
 
 OpenjpegWrapper::OpenjpegWrapper()
     : _isFileLoaded(false),
-      _isDecoderSetup(false),
       _l_stream(nullptr),
       _l_codec(nullptr),
       _image(nullptr),
@@ -20,8 +19,8 @@ OpenjpegWrapper::~OpenjpegWrapper() {
 }
 
 std::unique_ptr<ImageData> OpenjpegWrapper::DecodeTile(const int& tileId) {
-  if (!_isDecoderSetup) {
-    std::cerr << "Decoder needs to be set up before reading tiles\n";
+  if (!_isFileLoaded) {
+    std::cerr << "File needs to be set up before reading tiles\n";
     return nullptr;
   }
 
@@ -33,6 +32,13 @@ std::unique_ptr<ImageData> OpenjpegWrapper::DecodeTile(const int& tileId) {
   // Assume greyscale for now
   ImageData im = {_image->comps[0].data, _image->comps[0].w, _image->comps[0].h};
   return std::make_unique<ImageData>(im);
+}
+
+void OpenjpegWrapper::SetResolutionFactor(const int res) {
+  if (!opj_set_decoded_resolution_factor(_l_codec, res)) {
+    std::cerr << "Failed to set resolution factor\n";
+    return;
+  }
 }
 
 void OpenjpegWrapper::Destroy() {
@@ -73,15 +79,11 @@ void OpenjpegWrapper::Load(const std::string& filename) {
     return;
   }
 
+  SetupDecoder();
   _isFileLoaded = true;
 }
 
-void OpenjpegWrapper::SetupDecoder(const int resolution) {
-  if (!_isFileLoaded) {
-    std::cerr << "No file loaded\n";
-    return;
-  }
-
+void OpenjpegWrapper::SetupDecoder() {
   if (!opj_setup_decoder(_l_codec, &_parameters)) {
     std::cerr << "Failed to set up the decoder\n";
     Destroy();
@@ -112,8 +114,6 @@ void OpenjpegWrapper::SetupDecoder(const int resolution) {
                         (void)client_data;
                         std::cerr << "[ERROR]" << msg;
                       }, 00);
-
-  _isDecoderSetup = true;
 }
 
 const int OpenjpegWrapper::GetInfileFormat(const char *fname) {

@@ -15,15 +15,15 @@ public:
   OpenjpegWrapper();
   ~OpenjpegWrapper();
   std::unique_ptr<ImageData> DecodeTile(const int& resolutionLevel);
-  void SetupDecoder(const int resolution = 0);
   void Load(const std::string& filename);
+  void SetResolutionFactor(const int resolution);
 
 private:
   const int GetInfileFormat(const char* fname);
   void Destroy();
+  void SetupDecoder();
 
   bool _isFileLoaded;
-  bool _isDecoderSetup;
   opj_stream_t* _l_stream;
   opj_codec_t* _l_codec;
   opj_dparameters_t _parameters;
