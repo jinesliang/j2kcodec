@@ -1,1 +1,1 @@
-# OpenJPEG-Wrapper
+# libj2k
