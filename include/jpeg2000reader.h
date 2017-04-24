@@ -1,5 +1,5 @@
-#ifndef OPENJPEGWRAPPER_H
-#define OPENJPEGWRAPPER_H
+#ifndef JPEG2000READER_H
+#define JPEG2000READER_H
 
 #include "openjpeg.h"
 #include <string>
@@ -10,10 +10,10 @@ struct ImageData {
   uint32_t h;
 };
 
-class OpenjpegWrapper {
+class Jpeg2000Reader {
 public:
-  OpenjpegWrapper();
-  ~OpenjpegWrapper();
+  Jpeg2000Reader();
+  ~Jpeg2000Reader();
   std::unique_ptr<ImageData> DecodeTile(const int& resolutionLevel);
   void Load(const std::string& filename);
   void SetResolutionFactor(const int resolution);
@@ -31,4 +31,4 @@ private:
   opj_codestream_info_v2_t* _cstr_info;
 };
 
-#endif // OPENJPEGWRAPPER_H
+#endif // JPEG2000READER_H

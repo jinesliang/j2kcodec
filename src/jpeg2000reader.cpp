@@ -1,4 +1,4 @@
-#include "openjpegwrapper.h"
+#include "jpeg2000reader.h"
 #include "format_defs.h"
 #include <iostream>
 #include <memory>
@@ -7,18 +7,18 @@
 #define JP2_MAGIC "\x0d\x0a\x87\x0a"
 #define J2K_CODESTREAM_MAGIC "\xff\x4f\xff\x51"
 
-OpenjpegWrapper::OpenjpegWrapper()
+Jpeg2000Reader::Jpeg2000Reader()
     : _isFileLoaded(false),
       _l_stream(nullptr),
       _l_codec(nullptr),
       _image(nullptr),
       _cstr_info(nullptr) {}
 
-OpenjpegWrapper::~OpenjpegWrapper() {
+Jpeg2000Reader::~Jpeg2000Reader() {
   Destroy();
 }
 
-std::unique_ptr<ImageData> OpenjpegWrapper::DecodeTile(const int& tileId) {
+std::unique_ptr<ImageData> Jpeg2000Reader::DecodeTile(const int& tileId) {
   if (!_isFileLoaded) {
     std::cerr << "File needs to be set up before reading tiles\n";
     return nullptr;
@@ -34,21 +34,21 @@ std::unique_ptr<ImageData> OpenjpegWrapper::DecodeTile(const int& tileId) {
   return std::make_unique<ImageData>(im);
 }
 
-void OpenjpegWrapper::SetResolutionFactor(const int res) {
+void Jpeg2000Reader::SetResolutionFactor(const int res) {
   if (!opj_set_decoded_resolution_factor(_l_codec, res)) {
     std::cerr << "Failed to set resolution factor\n";
     return;
   }
 }
 
-void OpenjpegWrapper::Destroy() {
+void Jpeg2000Reader::Destroy() {
   opj_stream_destroy(_l_stream);
   opj_destroy_cstr_info(&_cstr_info);
   opj_destroy_codec(_l_codec);
   opj_image_destroy(_image);
 }
 
-void OpenjpegWrapper::Load(const std::string& filename) {
+void Jpeg2000Reader::Load(const std::string& filename) {
   opj_set_default_decoder_parameters(&_parameters);
   //strncpy(_parameters.infile, filename, OPJ_PATH_LEN - 1);
   strcpy(_parameters.infile, filename.c_str());
@@ -83,7 +83,7 @@ void OpenjpegWrapper::Load(const std::string& filename) {
   _isFileLoaded = true;
 }
 
-void OpenjpegWrapper::SetupDecoder() {
+void Jpeg2000Reader::SetupDecoder() {
   if (!opj_setup_decoder(_l_codec, &_parameters)) {
     std::cerr << "Failed to set up the decoder\n";
     Destroy();
@@ -116,8 +116,7 @@ void OpenjpegWrapper::SetupDecoder() {
                       }, 00);
 }
 
-const int OpenjpegWrapper::GetInfileFormat(const char *fname) {
-
+const int Jpeg2000Reader::GetInfileFormat(const char *fname) {
   const auto get_file_format = [](const char* filename) {
     unsigned int i;
     static const char *extension[] = {"pgx", "pnm", "pgm", "ppm", "bmp","tif", "raw", "tga", "png", "j2k", "jp2", "jpt", "j2c", "jpc" };
