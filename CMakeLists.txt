@@ -22,6 +22,6 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/include
 )
 
-add_executable(out ${PROJECT_SOURCE_DIR}/main.cpp ${PROJECT_SOURCE_DIR}/src/jpeg2000reader.cpp )
+add_executable(out ${PROJECT_SOURCE_DIR}/main.cpp ${PROJECT_SOURCE_DIR}/src/simplej2kcodec.cpp )
 # Link to openjpeg
 target_link_libraries(out openjp2)

@@ -1,4 +1,4 @@
-#include "jpeg2000reader.h"
+#include "simplej2kcodec.h"
 #include "format_defs.h"
 #include <iostream>
 #include <memory>
@@ -8,18 +8,23 @@
 #define JP2_MAGIC "\x0d\x0a\x87\x0a"
 #define J2K_CODESTREAM_MAGIC "\xff\x4f\xff\x51"
 
-Jpeg2000Reader::Jpeg2000Reader()
+SimpleJ2kCodec::SimpleJ2kCodec()
     : _isFileLoaded(false),
       _infileStream(nullptr),
       _decoder(nullptr),
       _image(nullptr),
       _codestreamInfo(nullptr) {}
 
-Jpeg2000Reader::~Jpeg2000Reader() {
+SimpleJ2kCodec::~SimpleJ2kCodec() {
   Destroy();
 }
 
-std::unique_ptr<ImageData> Jpeg2000Reader::Decode() {
+std::unique_ptr<ImageData> SimpleJ2kCodec::Decode() {
+  if (!_isFileLoaded) {
+    std::cerr << "File needs to be set up before reading tiles\n";
+    return nullptr;
+  }
+
   if (!_isDecoderSetup) {
     SetupDecoder();
     _isDecoderSetup = true;
@@ -38,11 +43,10 @@ std::unique_ptr<ImageData> Jpeg2000Reader::Decode() {
   }
 
   ImageData im = {_image->comps[0].data, _image->comps[0].w, _image->comps[0].h};
- // _isFileLoaded = false;
   return std::make_unique<ImageData>(im);
 }
 
-std::unique_ptr<ImageData> Jpeg2000Reader::DecodeTile(const int& tileId) {
+std::unique_ptr<ImageData> SimpleJ2kCodec::DecodeTile(const int& tileId) {
   if (!_isFileLoaded) {
     std::cerr << "File needs to be set up before reading tiles\n";
     return nullptr;
@@ -63,14 +67,14 @@ std::unique_ptr<ImageData> Jpeg2000Reader::DecodeTile(const int& tileId) {
   return std::make_unique<ImageData>(im);
 }
 
-void Jpeg2000Reader::SetResolutionFactor(const int res) {
+void SimpleJ2kCodec::SetResolutionFactor(const int res) {
   if (!opj_set_decoded_resolution_factor(_decoder, res)) {
     std::cerr << "Failed to set resolution factor\n";
     return;
   }
 }
 
-void Jpeg2000Reader::Destroy() {
+void SimpleJ2kCodec::Destroy() {
   std::cerr << "Destroying..\n";
   opj_stream_destroy(_infileStream);
   if (_codestreamInfo) {
@@ -81,7 +85,7 @@ void Jpeg2000Reader::Destroy() {
   _isDecoderSetup = false;
 }
 
-void Jpeg2000Reader::CreateInfileStream(const std::string& filename) {
+void SimpleJ2kCodec::CreateInfileStream(const std::string& filename) {
   Destroy();
   strcpy(_infileName, filename.c_str());
 
@@ -96,7 +100,7 @@ void Jpeg2000Reader::CreateInfileStream(const std::string& filename) {
   _isFileLoaded = true;
 }
 
-void Jpeg2000Reader::EncodeAsTiles(const char* outfile,
+void SimpleJ2kCodec::EncodeAsTiles(const char* outfile,
                             const int32_t* data,
                             const unsigned int imageWidth,
                             const unsigned int imageHeight,
@@ -254,7 +258,7 @@ void Jpeg2000Reader::EncodeAsTiles(const char* outfile,
   }
 }
 
-void Jpeg2000Reader::SetupDecoder() {
+void SimpleJ2kCodec::SetupDecoder() {
   opj_set_default_decoder_parameters(&_decoderParams);
   strcpy(_decoderParams.infile, _infileName);
   _decoderParams.decod_format = GetInfileFormat(_decoderParams.infile);
@@ -310,7 +314,7 @@ void Jpeg2000Reader::SetupDecoder() {
                       }, 00);
 }
 
-const int Jpeg2000Reader::GetInfileFormat(const char *fname) {
+const int SimpleJ2kCodec::GetInfileFormat(const char *fname) {
   const auto get_file_format = [](const char* filename) {
     unsigned int i;
     static const char *extension[] = {"pgx", "pnm", "pgm", "ppm", "bmp","tif", "raw", "tga", "png", "j2k", "jp2", "jpt", "j2c", "jpc" };

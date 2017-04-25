@@ -1,5 +1,5 @@
-#ifndef JPEG2000READER_H
-#define JPEG2000READER_H
+#ifndef SIMPLEJ2KCODEC_H
+#define SIMPLEJ2KCODEC_H
 
 #include "openjpeg.h"
 #include <string>
@@ -10,11 +10,10 @@ struct ImageData {
   uint32_t h;
 };
 
-// class simplej2kcodec
-class Jpeg2000Reader {
+class SimpleJ2kCodec {
 public:
-  Jpeg2000Reader();
-  ~Jpeg2000Reader();
+  SimpleJ2kCodec();
+  ~SimpleJ2kCodec();
   // Decode tile from current loaded file
   std::unique_ptr<ImageData> DecodeTile(const int& tileId);
   // Decode whole image from current loaded file
@@ -41,7 +40,7 @@ private:
   bool _isDecoderSetup;
   char _infileName[OPJ_PATH_LEN];
 
-  // Decoding will happen frequently and we don't want to set up decoder every
+  // Decoding will happen frequently - store the setup
   opj_stream_t* _infileStream;
   opj_codec_t* _decoder;
   opj_dparameters_t _decoderParams;
@@ -49,4 +48,4 @@ private:
   opj_codestream_info_v2_t* _codestreamInfo;
 };
 
-#endif // JPEG2000READER_H
+#endif // SIMPLEJ2KCODEC_H

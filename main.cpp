@@ -1,14 +1,14 @@
 #include <iostream>
-#include "jpeg2000reader.h"
+#include "simplej2kcodec.h"
 
 int main() {
   std::cout << " Hello " << std::endl;
 
-  Jpeg2000Reader j;
+  SimpleJ2kCodec j;
   j.CreateInfileStream("helio335.jp2");
   auto img2 = j.Decode(); // Must go first lol
   //auto img = j.DecodeTile(0);
-  j.Encode("out.j2k", img2->data, 4096, 4096, 512, 512, 1, 8);
+  j.EncodeAsTiles("out.j2k", img2->data, 4096, 4096, 512, 512, 1, 8);
 
 
   //for (int i = 0; i < 1; i++) {
