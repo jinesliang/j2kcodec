@@ -1,14 +1,17 @@
 #include <iostream>
 #include "simplej2kcodec.h"
+#include <string>
 
-int main() {
-  std::cout << " Hello " << std::endl;
+int main(int argc, char* argv[]) {
+  SimpleJ2kCodec j(false);
+  const std::string path = argv[1];
 
-  SimpleJ2kCodec j;
-  j.CreateInfileStream("helio335.jp2");
-  auto img2 = j.Decode(); // Must go first lol
+  j.ParseXMLToFile(path);
+
+  //j.CreateInfileStream("helio335.jp2");
+  //auto img2 = j.Decode(path, 0); // Must go first lol
   //auto img = j.DecodeTile(0);
-  j.EncodeAsTiles("out.j2k", img2->data, 4096, 4096, 512, 512, 1, 8);
+  //j.EncodeAsTiles("out.j2k", img2->data, 4096, 4096, 512, 512, 1, 8);
 
 
   //for (int i = 0; i < 1; i++) {
