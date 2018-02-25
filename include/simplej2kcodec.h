@@ -7,10 +7,17 @@
 
 #define ALL_THREADS 0
 
+namespace j2c {
+
 struct ImageData {
     int32_t* data;
     uint32_t w;
     uint32_t h;
+};
+
+struct XmlData {
+    uint8_t* data;
+    size_t length;
 };
 
 class SimpleJ2kCodec {
@@ -18,7 +25,7 @@ public:
   SimpleJ2kCodec(bool verboseMode = false);
   ~SimpleJ2kCodec();
 
-  void ParseXMLToFile(const std::string path);
+  XmlData fetchXMLData(const std::string path);
   // Decode and return image object
   std::shared_ptr<ImageData> Decode(const std::string& path, const int resolutionLevel,
                                     const int numQualityLayers = 1, const int x0 = -1,
@@ -60,5 +67,7 @@ private:
     opj_stream_t* _infileStream;
     bool _verboseMode;
 };
+} // namespace j2c
 
 #endif // SIMPLEJ2KCODEC_H
+

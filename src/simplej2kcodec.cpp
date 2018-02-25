@@ -19,10 +19,10 @@ int GetInfileFormat(const char* fname) {
         unsigned int i;
         static const char* extension[]
               = {"pgx", "pnm", "pgm", "ppm", "bmp", "tif", "raw",
-                 "tga", "png", "j2k", "jp2", "jpt", "j2c", "jpc"};
+                 "tga", "png", "j2k", "jp2", "j2c", "jpc"};
         static const int format[]
               = {PGX_DFMT, PXM_DFMT, PXM_DFMT, PXM_DFMT, BMP_DFMT, TIF_DFMT, RAW_DFMT,
-                 TGA_DFMT, PNG_DFMT, J2K_CFMT, JP2_CFMT, JPT_CFMT, J2K_CFMT, J2K_CFMT};
+                 TGA_DFMT, PNG_DFMT, J2K_CFMT, JP2_CFMT, J2K_CFMT, J2K_CFMT};
         const char* ext = strrchr(filename, '.');
         if (ext == NULL)
             return -1;
@@ -59,9 +59,9 @@ int GetInfileFormat(const char* fname) {
 
     ext_format = get_file_format(fname);
 
-    if (ext_format == JPT_CFMT) {
-        return JPT_CFMT;
-    }
+    // if (ext_format == JPT_CFMT) {
+    //     assert(false, "Not implemented!");
+    // }
 
     if (memcmp(buf, JP2_RFC3745_MAGIC, 12) == 0 || memcmp(buf, JP2_MAGIC, 4) == 0) {
         magic_format = JP2_CFMT;
@@ -85,6 +85,8 @@ int GetInfileFormat(const char* fname) {
     return magic_format;
 }
 }
+
+namespace j2c {
 
 SimpleJ2kCodec::SimpleJ2kCodec(const bool verboseMode)
     : _codestreamInfo(nullptr)
@@ -137,7 +139,8 @@ void SimpleJ2kCodec::DecodeIntoBuffer(const std::string& path, unsigned char* bu
     }
 }
 
-void SimpleJ2kCodec::ParseXMLToFile(const std::string path) {
+XmlData SimpleJ2kCodec::fetchXMLData(const std::string path)
+{
   CreateInfileStream(path);
   SetupDecoder(0, 1, -1, -1, -1, -1, 0);
 
@@ -151,16 +154,17 @@ void SimpleJ2kCodec::ParseXMLToFile(const std::string path) {
   uint8_t* xmlData = header_info.xml_data;
   size_t xmlLen = header_info.xml_data_len;
 
-  size_t lastindex = path.find_last_of(".");
-  std::string basename = path.substr(0, lastindex);
+  return {xmlData, xmlLen};
+  //size_t lastindex = path.find_last_of(".");
+  //std::string basename = path.substr(0, lastindex);
 
-  std::ofstream myfile (basename + ".xml");
-  if (myfile.is_open()) {
-    for (int i = 0; i < xmlLen; ++i){
-        myfile << xmlData[i];
-    }
-    myfile.close();
-  }
+//   std::ofstream myfile (basename + ".xml");
+//   if (myfile.is_open()) {
+//     for (int i = 0; i < xmlLen; ++i){
+//         myfile << xmlData[i];
+//     }
+//     myfile.close();
+//   }
 }
 
 std::shared_ptr<ImageData>
@@ -453,13 +457,13 @@ void SimpleJ2kCodec::SetupDecoder(const int resolutionLevel, const int numQualit
             _decoder = opj_create_decompress(OPJ_CODEC_JP2);
             break;
         }
-        case JPT_CFMT: {  // JPEG 2000, JPIP
-            _decoder = opj_create_decompress(OPJ_CODEC_JPT);
-            break;
-        }
+        // case JPT_CFMT: {  // JPEG 2000, JPIP
+        //     assert(false, "Not implemented!");
+        //     break;
+        // }
         default:
             std::cerr << "Unrecognized format for input " << _decoderParams.infile
-                      << " - Accept only .j2k, .jp2, .jpc or .jpt]\n";
+                      << " - Accept only .j2k, .jp2, .jpc\n";
             return;
     }
 
@@ -507,3 +511,4 @@ void SimpleJ2kCodec::SetupDecoder(const int resolutionLevel, const int numQualit
                               00);
     }
 }
+} // namespace j2c
