@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
-#include "simplej2kcodec.h"
+#include "j2kcodec.h"
 #include "xml2json.hpp"
 #include <filesystem>
 
 using namespace j2c;
 
-void extractJSON(const std::string& path, SimpleJ2kCodec& j) {
+void extractJSON(const std::string& path, J2kCodec& j) {
 	const XmlData xmlData = j.fetchXMLData(path);
 	const std::string jsonData = xml2json(reinterpret_cast<char*>(xmlData.data));
 
@@ -22,7 +22,7 @@ void extractJSON(const std::string& path, SimpleJ2kCodec& j) {
 }
 
 int main(int argc, char* argv[]) {
-	SimpleJ2kCodec j(/*verbose=*/false);
+	J2kCodec j(/*verbose=*/false);
 	if (argc != 3 || std::string(argv[1]) != "-m") {
 		std::cerr << "[ERROR] input format. Example: \n ./extract_json_from_jp2_rec -m directorypath\n";
 		return 0;

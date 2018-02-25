@@ -1,5 +1,5 @@
-#ifndef SIMPLEJ2KCODEC_H
-#define SIMPLEJ2KCODEC_H
+#ifndef J2KCODEC_H
+#define J2KCODEC_H
 
 #include "openjpeg.h"
 #include <string>
@@ -20,10 +20,10 @@ struct XmlData {
     size_t length;
 };
 
-class SimpleJ2kCodec {
+class J2kCodec {
 public:
-  SimpleJ2kCodec(bool verboseMode = false);
-  ~SimpleJ2kCodec();
+  J2kCodec(bool verboseMode = false);
+  ~J2kCodec();
 
   XmlData fetchXMLData(const std::string path);
   // Decode and return image object
@@ -70,5 +70,5 @@ private:
 };
 } // namespace j2c
 
-#endif // SIMPLEJ2KCODEC_H
+#endif // J2KCODEC_H
 

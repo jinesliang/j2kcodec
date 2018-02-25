@@ -1,6 +1,6 @@
 #include <iostream>
 #include <string>
-#include "simplej2kcodec.h"
+#include "j2kcodec.h"
 #include "xml2json.hpp"
 
 using namespace j2c;

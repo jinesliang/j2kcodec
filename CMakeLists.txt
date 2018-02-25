@@ -21,8 +21,8 @@ include_directories(
   ${CMAKE_SOURCE_DIR}/build/ext/grok/src/lib/openjp2
 )
 
-add_executable(extract_json_from_jp2 ${PROJECT_SOURCE_DIR}/test/extract_json_from_jp2.cpp ${PROJECT_SOURCE_DIR}/src/simplej2kcodec.cpp )
-add_executable(extract_json_from_jp2_rec ${PROJECT_SOURCE_DIR}/test/extract_json_from_jp2_rec.cpp ${PROJECT_SOURCE_DIR}/src/simplej2kcodec.cpp )
+add_executable(extract_json_from_jp2 ${PROJECT_SOURCE_DIR}/test/extract_json_from_jp2.cpp ${PROJECT_SOURCE_DIR}/src/j2kcodec.cpp )
+add_executable(extract_json_from_jp2_rec ${PROJECT_SOURCE_DIR}/test/extract_json_from_jp2_rec.cpp ${PROJECT_SOURCE_DIR}/src/j2kcodec.cpp )
 
 # Link to openjpeg
 target_link_libraries(extract_json_from_jp2 openjp2)

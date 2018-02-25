@@ -1,12 +1,12 @@
 #include <iostream>
 #include <string>
-#include "simplej2kcodec.h"
+#include "j2kcodec.h"
 #include "xml2json.hpp"
 
 using namespace j2c;
 
 int main(int argc, char* argv[]) {
-  SimpleJ2kCodec j(/*verbose=*/false);
+  J2kCodec j(/*verbose=*/false);
   if (argc != 3 || std::string(argv[1]) != "-m") {
       std::cerr << "[ERROR] input format. Example: \n ./extract_json_from_jp2 -m image.jp2\n";
       return 0;

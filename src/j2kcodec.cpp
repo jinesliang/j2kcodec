@@ -1,4 +1,4 @@
-#include "simplej2kcodec.h"
+#include "j2kcodec.h"
 #include "format_defs.h"
 #include <iostream>
 #include <memory>
@@ -89,7 +89,7 @@ int GetInfileFormat(const char* fname) {
 
 namespace j2c {
 
-SimpleJ2kCodec::SimpleJ2kCodec(const bool verboseMode)
+J2kCodec::J2kCodec(const bool verboseMode)
     : _codestreamInfo(nullptr)
     , _decoder(nullptr)
     , _image(nullptr)
@@ -98,11 +98,11 @@ SimpleJ2kCodec::SimpleJ2kCodec(const bool verboseMode)
 {
 }
 
-SimpleJ2kCodec::~SimpleJ2kCodec(){
+J2kCodec::~J2kCodec(){
     Destroy();
 }
 
-void SimpleJ2kCodec::DecodeIntoBuffer(const std::string& path, unsigned char* buffer,
+void J2kCodec::DecodeIntoBuffer(const std::string& path, unsigned char* buffer,
                                       const int resolutionLevel,
                                       const int numQualityLayers, const int x0,
                                       const int y0, const int x1, const int y1, const int numThreads)
@@ -140,7 +140,7 @@ void SimpleJ2kCodec::DecodeIntoBuffer(const std::string& path, unsigned char* bu
     }
 }
 
-XmlData SimpleJ2kCodec::fetchXMLData(const std::string path) {
+XmlData J2kCodec::fetchXMLData(const std::string path) {
   CreateInfileStream(path);
   SetupDecoder(0, 1, -1, -1, -1, -1, 0);
 
@@ -152,7 +152,7 @@ XmlData SimpleJ2kCodec::fetchXMLData(const std::string path) {
 }
 
 std::shared_ptr<ImageData>
-      SimpleJ2kCodec::Decode(const std::string& path, const int resolutionLevel,
+      J2kCodec::Decode(const std::string& path, const int resolutionLevel,
                              const int numQualityLayers, const int x0, const int y0,
                              const int x1, const int y1, const int numThreads)
 {
@@ -185,7 +185,7 @@ std::shared_ptr<ImageData>
     return std::make_shared<ImageData>(im);
 }
 
-// void SimpleJ2kCodec::DecodeTileIntoBuffer(const int tileId, const std::string& path,
+// void J2kCodec::DecodeTileIntoBuffer(const int tileId, const std::string& path,
 //                                           unsigned char& buffer,
 //                                           const int resolutionLevel,
 //                                           const int numQualityLayers, const int x0,
@@ -224,7 +224,7 @@ std::shared_ptr<ImageData>
 
 // }
 
-// std::shared_ptr<ImageData> SimpleJ2kCodec::DecodeTile(const int& tileId) {
+// std::shared_ptr<ImageData> J2kCodec::DecodeTile(const int& tileId) {
 //   if (!_isFileLoaded || !_isDecoderSetup) {
 //       std::cerr << "File and Decoder needs to be set up before decoding \n";
 //       return nullptr;
@@ -240,7 +240,7 @@ std::shared_ptr<ImageData>
 //   return std::make_shared<ImageData>(im);
 // }
 
-void SimpleJ2kCodec::Destroy() {
+void J2kCodec::Destroy() {
   if (_verboseMode) {
     std::cerr << "Destroying..\n";
   }
@@ -254,7 +254,7 @@ void SimpleJ2kCodec::Destroy() {
   //_isFileLoaded = false;
 }
 
-void SimpleJ2kCodec::CreateInfileStream(const std::string& filename) {
+void J2kCodec::CreateInfileStream(const std::string& filename) {
   //strcpy(_infileName, filename.c_str());
   _infileName = filename;
 
@@ -269,7 +269,7 @@ void SimpleJ2kCodec::CreateInfileStream(const std::string& filename) {
  // _isFileLoaded = true;
 }
 
-void SimpleJ2kCodec::EncodeAsTiles(const char* outfile,
+void J2kCodec::EncodeAsTiles(const char* outfile,
                                    const int32_t* data,
                                    const unsigned int imageWidth,
                                    const unsigned int imageHeight,
@@ -418,7 +418,7 @@ void SimpleJ2kCodec::EncodeAsTiles(const char* outfile,
   opj_destroy_codec(_encoder);
 }
 
-void SimpleJ2kCodec::SetupDecoder(const int resolutionLevel, const int numQualityLayers, const int x0,
+void J2kCodec::SetupDecoder(const int resolutionLevel, const int numQualityLayers, const int x0,
                   const int y0, const int x1, const int y1,
                   const int numThreads)
 {
