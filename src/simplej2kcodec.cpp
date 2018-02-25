@@ -6,6 +6,7 @@
 #include <cstring>
 #include <chrono>
 #include <fstream>
+#include <assert.h>
 
 typedef std::chrono::high_resolution_clock Clock;
 
@@ -139,32 +140,15 @@ void SimpleJ2kCodec::DecodeIntoBuffer(const std::string& path, unsigned char* bu
     }
 }
 
-XmlData SimpleJ2kCodec::fetchXMLData(const std::string path)
-{
+XmlData SimpleJ2kCodec::fetchXMLData(const std::string path) {
   CreateInfileStream(path);
   SetupDecoder(0, 1, -1, -1, -1, -1, 0);
 
-  opj_header_info_t header_info;
+  uint8_t* xmlData = _headerInfo.xml_data;
+  size_t xmlLen = _headerInfo.xml_data_len;
 
-  // if (!opj_read_header_ex(_infileStream, _decoder, &header_info, &_image)) {
-  //   std::cerr << "Could not read header ex \n";
-  // }
-
-  bool ok = opj_read_header_ex(_infileStream, _decoder, &header_info, &_image);
-  uint8_t* xmlData = header_info.xml_data;
-  size_t xmlLen = header_info.xml_data_len;
-
+  assert(xmlData && xmlLen && "XML data invalid");
   return {xmlData, xmlLen};
-  //size_t lastindex = path.find_last_of(".");
-  //std::string basename = path.substr(0, lastindex);
-
-//   std::ofstream myfile (basename + ".xml");
-//   if (myfile.is_open()) {
-//     for (int i = 0; i < xmlLen; ++i){
-//         myfile << xmlData[i];
-//     }
-//     myfile.close();
-//   }
 }
 
 std::shared_ptr<ImageData>
@@ -277,7 +261,7 @@ void SimpleJ2kCodec::CreateInfileStream(const std::string& filename) {
   _infileStream = opj_stream_create_default_file_stream(_infileName.c_str(), 1);
   if (!_infileStream){
     std::cerr << "Failed to create stream from file " << _infileName << "\n";
-    return;
+    assert(false);
   }
 
   // Infile changed, refresh decoder
@@ -473,7 +457,7 @@ void SimpleJ2kCodec::SetupDecoder(const int resolutionLevel, const int numQualit
     }
 
     // Read the main header of the codestream and if necessary the JP2 boxes
-    if (!opj_read_header(_infileStream, _decoder, &_image)) {
+    if (!opj_read_header_ex(_infileStream, _decoder, &_headerInfo, &_image)) {
         std::cerr << "Failed to read the header\n";
         return;
     }

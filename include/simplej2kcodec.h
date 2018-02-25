@@ -29,7 +29,7 @@ public:
   // Decode and return image object
   std::shared_ptr<ImageData> Decode(const std::string& path, const int resolutionLevel,
                                     const int numQualityLayers = 1, const int x0 = -1,
-                                    const int y0 = -1, const int x1 = -1, const int y1 = -1,
+                                const int y0 = -1, const int x1 = -1, const int y1 = -1,
                                     const int numThreads = ALL_THREADS);
   // Decode into a client allocated buffer
   void DecodeTileIntoBuffer(const int tileId, const std::string& path,
@@ -62,6 +62,7 @@ private:
     opj_codec_t* _decoder;
     opj_dparameters_t _decoderParams;
     opj_image_t* _image;
+    opj_header_info_t _headerInfo;
 
     std::string _infileName;
     opj_stream_t* _infileStream;
