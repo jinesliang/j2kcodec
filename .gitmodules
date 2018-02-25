@@ -1,3 +1,6 @@
 [submodule "ext/grok"]
 	path = ext/grok
 	url = https://github.com/GrokImageCompression/grok
+[submodule "ext/xml2json"]
+	path = ext/xml2json
+	url = https://github.com/Cheedoong/xml2json
