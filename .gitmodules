@@ -1,0 +1,3 @@
+[submodule "ext/grok"]
+	path = ext/grok
+	url = https://github.com/GrokImageCompression/grok
