@@ -12,7 +12,7 @@ Cross platform simple codec to encode, decode JPEG2000 files and extract metadat
 There are two sample apps for extracting metadata from .jp2 files: <br/>
 
 `./extract_json_from_jp2 -m {filename} // Single file`<br/>
-`./extract_data_from_jp2 -m {directory} --{json/xml} // Recursively extract from all files in directory`
+`./extract_data_from_jp2_rec -m {directory} --{json/xml} // Recursively extract from all files in directory`
 
 Example
-`./extract_data_from_jp2 -m ../relative_path/directory_with_jp2s --json`
+`./extract_data_from_jp2_rec -m ../relative_path/directory_with_jp2s --json`
