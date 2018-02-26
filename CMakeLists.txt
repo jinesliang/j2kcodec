@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.5)
-project(OpenJPEG-Wrapper)
+project(j2kCodec)
 
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_BINARY_DIR ${CMAKE_SOURCE_DIR}/bin)
