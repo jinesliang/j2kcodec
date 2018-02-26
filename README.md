@@ -3,7 +3,7 @@
 Cross platform simple codec to encode, decode JPEG2000 files and extract metadata from JPEG2000 files to JSON format.
 
 #### Setup
-* Clone repo and submodules `git clone --recurse-submodlues https://github.com/novalain/j2kcodec.git`
+* Clone repo and submodules `git clone --recurse-submodules https://github.com/novalain/j2kcodec.git`
 * Run `mkdir build && cd build && cmake ..`
 * Run makefile or open up VS
 * On Windows: Copy over openjp2.dll to bin folder 😬 
