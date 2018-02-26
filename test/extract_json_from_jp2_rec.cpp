@@ -6,7 +6,8 @@
 
 using namespace j2c;
 
-void extractJSON(const std::string& path, J2kCodec& j) {
+void extractJSON(const std::string& path) {
+	J2kCodec j(/*verbose=*/false);
 	const XmlData xmlData = j.fetchXMLData(path);
 	const std::string jsonData = xml2json(reinterpret_cast<char*>(xmlData.data));
 
@@ -22,7 +23,6 @@ void extractJSON(const std::string& path, J2kCodec& j) {
 }
 
 int main(int argc, char* argv[]) {
-	J2kCodec j(/*verbose=*/false);
 	if (argc != 3 || std::string(argv[1]) != "-m") {
 		std::cerr << "[ERROR] input format. Example: \n ./extract_json_from_jp2_rec -m directorypath\n";
 		return 0;
@@ -34,7 +34,7 @@ int main(int argc, char* argv[]) {
 		if (is_regular_file(dirEntry.path())) {
 			const std::string path = dirEntry.path().string();
 			if (path.substr(path.find_last_of(".") + 1) == "jp2") {
-				extractJSON(path, j);
+				extractJSON(path);
 			}
 		}
 	}
